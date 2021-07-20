@@ -14,7 +14,9 @@ class NewsServiceComposite: ContentService {
     private var onlineService: OnlineNewsService
     private var localService: LocalNewsService
     
-    init(onlineService: OnlineNewsService = OnlineNewsService(), localService: LocalNewsService = LocalNewsService()) {
+    init(onlineService: OnlineNewsService = OnlineNewsService(),
+         localService: LocalNewsService = LocalNewsService()
+    ) {
         self.onlineService = onlineService
         self.localService = localService
     }
@@ -23,24 +25,23 @@ class NewsServiceComposite: ContentService {
         // First fetch locally
         localService.fetch { [weak self] response in
             
-            guard let data = response else {
-                
-                self?.onlineService.fetch { [weak self] articles in
-                    
-                    self?.localService.save(objects: articles!) { (done) in
-                        
-                        if done {
-                            
-                            self?.localService.fetch({ articles in
-                                output(articles)
-                            })
-                        }
-                    }
-                }
+            if let data = response, data.count > 0 {
+                output(data)
                 return
             }
             
-            output(data)
+            self?.onlineService.fetch { [weak self] articles in
+                
+                self?.localService.save(objects: articles!) { error  in
+                    
+                    if error == nil {
+                        
+                        self?.localService.fetch({ articles in
+                            output(articles)
+                        })
+                    }
+                }
+            }
         }
     }
 }

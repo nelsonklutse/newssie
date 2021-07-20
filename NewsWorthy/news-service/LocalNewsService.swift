@@ -36,7 +36,7 @@ class LocalNewsService: CacheService {
         }
     }
     
-    func save(objects: Output, _ completion: @escaping (Bool) -> Void) {
+    func save(objects: Output, _ completion: @escaping (_ error: Error?) -> Void) {
         let viewContext = self.persistenceController.container.viewContext
         objects.forEach { (article) in
             let item = NewsArticle(context: viewContext)
@@ -50,7 +50,7 @@ class LocalNewsService: CacheService {
             
             do {
                 try viewContext.save()
-                completion(true)
+                completion(nil)
             }catch {
                 let nsError = error as NSError
                 

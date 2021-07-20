@@ -14,5 +14,5 @@ protocol ContentService {
 }
 
 protocol CacheService: ContentService {
-    func save(objects: Output, _ completion: @escaping (Bool) -> Void)
+    func save(objects: Output, _ completion: @escaping (_ error: Error?) -> Void)
 }
