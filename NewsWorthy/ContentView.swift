@@ -6,75 +6,56 @@
 //
 
 import SwiftUI
-import CoreData
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-        animation: .default)
-    private var items: FetchedResults<Item>
-
+    @StateObject var newsStand: NewsStand
+    
     var body: some View {
-        List {
-            ForEach(items) { item in
-                Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+        NavigationView {
+            List {
+                ForEach(newsStand.articles){ article in
+                    Link(destination: URL(string: article.url)!, label: {
+                        NewsView(article: article)
+                    })
+                }
             }
-            .onDelete(perform: deleteItems)
+            .navigationBarTitle("NewsWorthy")
         }
-        .toolbar {
-            #if os(iOS)
-            EditButton()
-            #endif
-
-            Button(action: addItem) {
-                Label("Add Item", systemImage: "plus")
-            }
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
+        
+        .onAppear {
+            newsStand.getArticles()
         }
     }
 }
 
-private let itemFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-}()
+
+struct NewsView: View {
+    var article: ArticleViewModel
+    
+    var body: some View {
+        HStack {
+            AsynImageView(article.imageSource)
+            VStack(alignment: .leading, spacing: 8) {
+                Text(article.title)
+                    .font(.caption)
+                    .bold()
+                    
+                VStack(alignment: .leading){
+                    Text("Source: \(article.source)")
+                        .font(.caption2)
+                    Text("Published: \(article.publishedAt)")
+                        .font(.caption2)
+                }
+            }
+            //.foregroundColor(.secondary)
+        }
+    }
+}
+
 
 struct ContentView_Previews: PreviewProvider {
+    let newsStand = NewsStand()
     static var previews: some View {
-        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        ContentView(newsStand: NewsStand())
     }
 }
