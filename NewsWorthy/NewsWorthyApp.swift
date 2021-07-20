@@ -9,8 +9,6 @@ import SwiftUI
 
 @main
 struct NewsWorthyApp: App {
-    let persistenceController = PersistenceController.shared
-
     var body: some Scene {
         WindowGroup {
             ContentView(newsStand: NewsStand())

@@ -15,7 +15,6 @@ class ImageLoader: ObservableObject {
             let cache = URLCache.shared
             let request = URLRequest(url: URL(string: imageURL)!, cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad, timeoutInterval: 60.0)
             if let data = cache.cachedResponse(for: request)?.data {
-                debugPrint("got image from cache")
                 self.imgData = data
             } else {
                 URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) in
@@ -23,7 +22,6 @@ class ImageLoader: ObservableObject {
                     let cachedData = CachedURLResponse(response: response, data: data)
                                         cache.storeCachedResponse(cachedData, for: request)
                         DispatchQueue.main.async {
-                            debugPrint("downloadeding from internet")
                             self.imgData = data
                         }
                     }

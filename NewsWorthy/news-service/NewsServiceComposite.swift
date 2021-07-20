@@ -19,9 +19,28 @@ class NewsServiceComposite: ContentService {
         self.localService = localService
     }
     
-    func fetch(_ output: @escaping ([Article]) -> Void) {
-        onlineService.fetch { articles in
-            output(articles)
+    func fetch(_ output: @escaping (Output?) -> Void) {
+        // First fetch locally
+        localService.fetch { [weak self] response in
+            
+            guard let data = response else {
+                
+                self?.onlineService.fetch { [weak self] articles in
+                    
+                    self?.localService.save(objects: articles!) { (done) in
+                        
+                        if done {
+                            
+                            self?.localService.fetch({ articles in
+                                output(articles)
+                            })
+                        }
+                    }
+                }
+                return
+            }
+            
+            output(data)
         }
     }
 }

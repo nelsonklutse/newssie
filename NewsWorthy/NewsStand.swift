@@ -18,9 +18,12 @@ class NewsStand: ObservableObject {
     
     func getArticles(){
         self.newsService.fetch { data in
-            self.articles = data.compactMap { article in
-                article.toViewModel()
-            }.sorted{ $0.publishedAt > $1.publishedAt }
+            if let data = data {
+                self.articles = data.compactMap { article in
+                    article.toViewModel()
+                }.sorted{ $0.publishedAt > $1.publishedAt }
+            }
+            
         }
     }
     

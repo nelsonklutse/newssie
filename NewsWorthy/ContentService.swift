@@ -10,5 +10,9 @@ import Foundation
 
 protocol ContentService {
     associatedtype Output
-    func fetch(_ output: @escaping (Output) -> Void)
+    func fetch(_ output: @escaping (Output?) -> Void)
+}
+
+protocol CacheService: ContentService {
+    func save(objects: Output, _ completion: @escaping (Bool) -> Void)
 }

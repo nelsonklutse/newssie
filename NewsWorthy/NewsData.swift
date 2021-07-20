@@ -22,6 +22,20 @@ struct Article: Decodable {
     let publishedAt: String
     
     
+    
+    func fromDictionary(data: [String : String]) -> Article {
+        return Article(
+                       url: data["url"]!,
+                       source: Source(name: data["name"]!),
+                       author: data["author"]!,
+                       title: data["title"]!,
+                       description: data["description"]!,
+                       urlToImage: data["urlToImage"]!,
+                       publishedAt: data["publishedAt"]!
+                    )
+        
+    }
+    
     func toDictionary() -> Any {
         return [
             "title": title,
@@ -32,10 +46,6 @@ struct Article: Decodable {
     }
     
     func toViewModel() -> ArticleViewModel {
-//        let dateFormatter = ISO8601DateFormatter()
-//        dateFormatter.formatOptions = .withInternetDateTime
-//        let inputDate = dateFormatter.date(from: self.publishedAt)!
-        
         let olDateFormatter = DateFormatter()
         olDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
 

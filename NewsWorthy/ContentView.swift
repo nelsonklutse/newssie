@@ -19,7 +19,7 @@ struct ContentView: View {
                     })
                 }
             }
-            .navigationBarTitle("NewsWorthy")
+            .navigationBarTitle("Newssie")
         }
         
         .onAppear {
@@ -37,8 +37,8 @@ struct NewsView: View {
             AsynImageView(article.imageSource)
             VStack(alignment: .leading, spacing: 8) {
                 Text(article.title)
-                    .font(.caption)
-                    .bold()
+                    .font(.headline)
+                    //.bold()
                     
                 VStack(alignment: .leading){
                     Text("Source: \(article.source)")
@@ -47,7 +47,6 @@ struct NewsView: View {
                         .font(.caption2)
                 }
             }
-            //.foregroundColor(.secondary)
         }
     }
 }

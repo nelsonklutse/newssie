@@ -15,6 +15,7 @@ enum NetworkError: LocalizedError {
 }
 
 class OnlineNewsService: ContentService {
+    
     typealias Output = [Article]
     
     private let kBaseURL = "https://newsapi.org/v2/everything"
@@ -29,7 +30,7 @@ class OnlineNewsService: ContentService {
     }
     
     
-    func fetch(_ output: @escaping (Output) -> Void) {
+    func fetch(_ output: @escaping (Output?) -> Void) {
         var serviceUrl = URLComponents(string: kBaseURL)
         serviceUrl?.query = "q=Ghana&from=2021-07-01&sortBy=popularity&pageSize=20&apiKey=\(kApiToken)"
         
@@ -65,6 +66,7 @@ class OnlineNewsService: ContentService {
         //self.cancellable?.cancel()
     }
     
+    func save(objects: Output, _ completion: @escaping (Bool) -> Void) {}
     
     private func handleResponse(data: Data?, response: URLResponse?, error: Error?){
         
