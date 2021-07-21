@@ -11,7 +11,12 @@ import SwiftUI
 struct NewsWorthyApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView(newsStand: NewsStand())
+            ContentView(newsStand: NewsStand(provider: makeNewsComposite()))
         }
+    }
+    
+    func makeNewsComposite() -> NewsServiceComposite {
+        let newsComposite = NewsServiceComposite(onlineService: OnlineNewsService<NewsData>())
+        return newsComposite
     }
 }

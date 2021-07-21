@@ -7,21 +7,19 @@
 
 import Foundation
 
-class NewsServiceComposite: ContentService {
+class NewsServiceComposite {
     
-    typealias Output = [Article]
-    
-    private var onlineService: OnlineNewsService
+    private var onlineService: OnlineNewsService<NewsData>
     private var localService: LocalNewsService
     
-    init(onlineService: OnlineNewsService = OnlineNewsService(),
+    init(onlineService: OnlineNewsService<NewsData>,
          localService: LocalNewsService = LocalNewsService()
     ) {
         self.onlineService = onlineService
         self.localService = localService
     }
     
-    func fetch(_ output: @escaping (Output?) -> Void) {
+    func fetch(_ output: @escaping ([Article]?) -> Void) {
         // First fetch locally
         localService.fetch { [weak self] response in
             
@@ -30,15 +28,15 @@ class NewsServiceComposite: ContentService {
                 return
             }
             
-            self?.onlineService.fetch { [weak self] articles in
+            self?.onlineService.fetch { [weak self] newsData in
                 
-                self?.localService.save(objects: articles!) { error  in
+                self?.localService.save(objects: newsData!.articles) { error  in
                     
                     if error == nil {
                         
-                        self?.localService.fetch({ articles in
+                        self?.localService.fetch { articles in
                             output(articles)
-                        })
+                        }
                     }
                 }
             }

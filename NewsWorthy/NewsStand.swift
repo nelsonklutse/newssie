@@ -9,15 +9,16 @@ import SwiftUI
 
 class NewsStand: ObservableObject {
     @Environment(\.openURL) var openURL
-    private var newsService: NewsServiceComposite
+    
+    private var newsProvider: NewsServiceComposite
     @Published var articles: [ArticleViewModel] = []
     
-    init(service: NewsServiceComposite = NewsServiceComposite()) {
-        self.newsService = service
+    init(provider: NewsServiceComposite) {
+        self.newsProvider = provider
     }
     
     func getArticles(){
-        self.newsService.fetch { data in
+        self.newsProvider.fetch { data in
             if let data = data {
                 self.articles = data.compactMap { article in
                     article.toViewModel()

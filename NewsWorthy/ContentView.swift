@@ -52,9 +52,9 @@ struct NewsView: View {
 }
 
 
-struct ContentView_Previews: PreviewProvider {
-    let newsStand = NewsStand()
-    static var previews: some View {
-        ContentView(newsStand: NewsStand())
-    }
-}
+//struct ContentView_Previews: PreviewProvider {
+//    let newsStand = NewsStand()
+//    static var previews: some View {
+//        ContentView(newsStand: NewsStand())
+//    }
+//}
